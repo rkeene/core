@@ -13,6 +13,7 @@ from homeassistant.components.light import (
     ATTR_EFFECT,
     ATTR_HS_COLOR,
     ATTR_RGB_COLOR,
+    ATTR_TRANSITION,
     SUPPORT_BRIGHTNESS,
     SUPPORT_COLOR,
     SUPPORT_COLOR_TEMP,
@@ -486,6 +487,7 @@ class LimitlessLEDRFZone(Light):
         attr_rgb_color = kwargs.get(ATTR_RGB_COLOR)
         attr_color_temp = kwargs.get(ATTR_COLOR_TEMP)
         attr_effect = kwargs.get(ATTR_EFFECT)
+        attr_transition = kwargs.get(ATTR_TRANSITION)
 
         # For now just record change, we'll apply them after turning the light on
         if attr_effect is not None:
@@ -530,6 +532,7 @@ class LimitlessLEDRFZone(Light):
             or "temperature" in attrs_to_copy
         ):
             attrs_to_copy.append("effect")
+            attrs_to_copy.append("transition")
             self._effect = None
 
         if self._effect == EFFECT_NIGHT:
@@ -537,9 +540,14 @@ class LimitlessLEDRFZone(Light):
         else:
             self._remote.on(self._zone)
 
+        # Setup transition, which is in seconds on the backend
+        transition_time = None
+        if attr_transition is not None:
+            transition_time = int(attr_transition)
+
         # Apply the changes now that the bulb has been turned on
         if "brightness" in attrs_to_copy:
-            self._remote.set_brightness(self._brightness, self._zone)
+            self._remote.set_brightness(self._brightness, self._zone, transition_time)
 
         if "temperature" in attrs_to_copy:
             self._remote.set_temperature(self._temperature, self._zone)
