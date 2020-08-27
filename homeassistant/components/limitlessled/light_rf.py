@@ -559,7 +559,7 @@ class LimitlessLEDRFZone(Light):
         This only really makes the whole-remote entity on or off depending
         on whether any bulbs in any zones are recorded as being on/off.
         """
-        if self._zone is None:
+        if self._zone is None and len(self._child_zones) > 0:
             child_zone_on = False
             for child_zone in self._child_zones:
                 if child_zone.is_on:
