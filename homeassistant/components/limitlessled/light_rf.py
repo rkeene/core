@@ -336,9 +336,13 @@ class LimitlessLEDRFZone(Light):
     @property
     def supported_features(self):
         """Return which features this bulb-type supports."""
+        features = 0
+
         if self._remote.get_type() == "rgbw":
             features = SUPPORT_BRIGHTNESS | SUPPORT_COLOR
         elif self._remote.get_type() == "cct":
+            features = SUPPORT_BRIGHTNESS | SUPPORT_COLOR_TEMP
+        elif self._remote.get_type() == "lyh_cct":
             features = SUPPORT_BRIGHTNESS | SUPPORT_COLOR_TEMP
 
         # If we support at least one effect, indicate so
