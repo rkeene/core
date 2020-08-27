@@ -288,7 +288,10 @@ class LimitlessLEDRFZone(Light):
         self._child_zones = child_zones
 
         # Fill in information based on this type of remote
-        self._supported_effects = type_effect_map[remote_type]
+        if remote_type in type_effect_map:
+            self._supported_effects = type_effect_map[remote_type]
+        else:
+            self._supported_effects = []
 
         # Assume the initial bulb state
         self._state_on = True
